@@ -1,0 +1,4 @@
+* text=auto
+*.swift text eol=lf
+*.md text eol=lf
+*.xcassets/** text eol=lf
