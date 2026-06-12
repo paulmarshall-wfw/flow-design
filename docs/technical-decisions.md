@@ -60,7 +60,7 @@ This file records early implementation decisions that should be settled before p
 
 - `FlowDesignApp` owns window, scene, native commands, toolbar, panel visibility, and document lifecycle.
 - `FlowDesignApp` presents `.flowdesign` documents through `DocumentGroup`; document scene state such as selected canvas is window-scoped, while semantic document data remains inside the bound file document.
-- The first user-facing semantic edit paths are the sidebar document title field and app synopsis editor. Both route through core document commands so revision and updated timestamp metadata change with the saved semantic JSON.
+- The first user-facing semantic edit paths are the sidebar document title field and app-level text section editors. They route through core document commands so revision and updated timestamp metadata change with the saved semantic JSON.
 - `FlowDesignCore` owns document, schema, validation, proposal, provenance, and persistence-safe types with no UI framework dependencies.
 - `FlowDesignPaperKit` owns PaperKit/AppKit/SwiftUI bridge code.
 - The main workspace is a full-canvas SwiftUI surface with floating Inspector and Text panels.

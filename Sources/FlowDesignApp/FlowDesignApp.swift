@@ -32,29 +32,24 @@ private struct FlowDesignWorkspaceView: View {
 
     var body: some View {
         NavigationSplitView {
-            VStack(alignment: .leading, spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Document")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    TextField("Document title", text: documentTitle)
-                        .textFieldStyle(.roundedBorder)
-                }
-                .padding([.horizontal, .top], 12)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("App Synopsis")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    TextEditor(text: appSynopsisBody)
-                        .font(.body)
-                        .frame(minHeight: 96)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(.quaternary)
+            VStack(alignment: .leading, spacing: 0) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Document")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            TextField("Document title", text: documentTitle)
+                                .textFieldStyle(.roundedBorder)
                         }
+
+                        AppTextSectionsView(document: $document)
+                    }
+                    .padding([.horizontal, .top], 12)
+                    .padding(.bottom, 8)
                 }
-                .padding(.horizontal, 12)
+
+                Divider()
 
                 List(document.canvases, selection: $selectedCanvasID) { canvas in
                     Text(canvas.name)
@@ -88,24 +83,45 @@ private struct FlowDesignWorkspaceView: View {
             set: { document.updateTitle($0) }
         )
     }
+}
 
-    private var appSynopsisBody: Binding<String> {
-        Binding(
-            get: { appSynopsisSection?.body ?? "" },
-            set: { body in
-                guard let sectionID = appSynopsisSection?.id else {
-                    return
+private struct AppTextSectionsView: View {
+    @Binding var document: FlowDesignDocument
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(document.appTextSections) { section in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(section.title)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextEditor(text: textSectionBody(sectionID: section.id))
+                        .font(.body)
+                        .frame(minHeight: editorHeight(for: section.type))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(.quaternary)
+                        }
                 }
+            }
+        }
+    }
+
+    private func textSectionBody(sectionID: TextSection.ID) -> Binding<String> {
+        Binding(
+            get: { document.textSection(id: sectionID)?.body ?? "" },
+            set: { body in
                 document.updateTextSectionBody(sectionID: sectionID, body: body)
             }
         )
     }
 
-    private var appSynopsisSection: TextSection? {
-        document.textSections.first { section in
-            section.owner.ownerType == .container
-                && section.owner.ownerID == document.appContainerID
-                && section.type == .appSynopsis
+    private func editorHeight(for sectionType: TextSection.SectionType) -> CGFloat {
+        switch sectionType {
+        case .appSynopsis:
+            96
+        default:
+            80
         }
     }
 }

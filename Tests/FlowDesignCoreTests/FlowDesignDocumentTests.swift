@@ -97,6 +97,31 @@ final class FlowDesignDocumentTests: XCTestCase {
         XCTAssertEqual(document, originalDocument)
     }
 
+    func testAllDefaultAppTextSectionsCanBeEditedAndPersisted() throws {
+        var document = FlowDesignDocument.newUntitled()
+        let appSections = document.appTextSections
+        let baseEditDate = Date(timeIntervalSince1970: 1_819_584_000)
+
+        for (offset, section) in appSections.enumerated() {
+            XCTAssertTrue(document.updateTextSectionBody(
+                sectionID: section.id,
+                body: "Edited \(section.title)",
+                updatedAt: baseEditDate.addingTimeInterval(TimeInterval(offset))
+            ))
+        }
+
+        let packageURL = temporaryPackageURL()
+        try FlowDesignDocumentPackageStore.save(document, to: packageURL)
+
+        let loaded = try FlowDesignDocumentPackageStore.load(from: packageURL)
+        XCTAssertEqual(document.revision, appSections.count)
+        XCTAssertEqual(loaded.appTextSections.map(\.id), appSections.map(\.id))
+        XCTAssertEqual(
+            loaded.appTextSections.map(\.body),
+            appSections.map { "Edited \($0.title)" }
+        )
+    }
+
     func testDocumentJSONRoundTripsSemanticFlowData() throws {
         var document = FlowDesignDocument.newUntitled()
         let viewID = try XCTUnwrap(document.flowViews.first?.id)

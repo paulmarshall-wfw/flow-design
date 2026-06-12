@@ -144,6 +144,10 @@ public struct FlowDesignDocument: Codable, Equatable, Identifiable, Sendable {
         flowContainers.first { $0.id == appContainerID && $0.containerType == .appContainer }
     }
 
+    public var appTextSections: [TextSection] {
+        textSections(ownerType: .container, ownerID: appContainerID)
+    }
+
     public mutating func updateTitle(_ title: String, updatedAt: Date = Date()) {
         guard self.title != title else {
             return
@@ -178,6 +182,10 @@ public struct FlowDesignDocument: Codable, Equatable, Identifiable, Sendable {
         textSections.filter { section in
             section.owner.ownerType == ownerType && section.owner.ownerID == ownerID
         }
+    }
+
+    public func textSection(id: TextSection.ID) -> TextSection? {
+        textSections.first { $0.id == id }
     }
 
     public func encodedDocumentJSON() throws -> Data {
