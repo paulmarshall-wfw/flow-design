@@ -144,6 +144,36 @@ public struct FlowDesignDocument: Codable, Equatable, Identifiable, Sendable {
         flowContainers.first { $0.id == appContainerID && $0.containerType == .appContainer }
     }
 
+    public mutating func updateTitle(_ title: String, updatedAt: Date = Date()) {
+        guard self.title != title else {
+            return
+        }
+
+        self.title = title
+        self.updatedAt = updatedAt
+        revision += 1
+    }
+
+    @discardableResult
+    public mutating func updateTextSectionBody(
+        sectionID: TextSection.ID,
+        body: String,
+        updatedAt: Date = Date()
+    ) -> Bool {
+        guard let sectionIndex = textSections.firstIndex(where: { $0.id == sectionID }) else {
+            return false
+        }
+        guard textSections[sectionIndex].body != body else {
+            return true
+        }
+
+        textSections[sectionIndex].body = body
+        textSections[sectionIndex].updatedAt = updatedAt
+        self.updatedAt = updatedAt
+        revision += 1
+        return true
+    }
+
     public func textSections(ownerType: TextOwnerReference.OwnerType, ownerID: UUID) -> [TextSection] {
         textSections.filter { section in
             section.owner.ownerType == ownerType && section.owner.ownerID == ownerID

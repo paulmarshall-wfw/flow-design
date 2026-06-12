@@ -64,3 +64,5 @@ The app-bundle path is now concrete: `scripts/generate_xcode_project.py` generat
 ## Document Lifecycle
 
 Flow Design registers `.flowdesign` as a native macOS package document type. The app shell now uses SwiftUI `DocumentGroup` for New/Open/Save, with `document.json` as the semantic source of truth inside each package and reserved `paperkit`, `previews`, and `provenance` sidecar directories managed by the core package store.
+
+The first native semantic edit paths are the document title field and app synopsis editor in the sidebar. Edits route through core document commands, update document revision metadata, and persist through the same package save/reopen path as the rest of the semantic model.

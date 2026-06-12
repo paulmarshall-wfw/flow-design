@@ -32,8 +32,33 @@ private struct FlowDesignWorkspaceView: View {
 
     var body: some View {
         NavigationSplitView {
-            List(document.canvases, selection: $selectedCanvasID) { canvas in
-                Text(canvas.name)
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Document")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextField("Document title", text: documentTitle)
+                        .textFieldStyle(.roundedBorder)
+                }
+                .padding([.horizontal, .top], 12)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("App Synopsis")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextEditor(text: appSynopsisBody)
+                        .font(.body)
+                        .frame(minHeight: 96)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(.quaternary)
+                        }
+                }
+                .padding(.horizontal, 12)
+
+                List(document.canvases, selection: $selectedCanvasID) { canvas in
+                    Text(canvas.name)
+                }
             }
             .navigationTitle(document.title)
         } detail: {
@@ -55,6 +80,33 @@ private struct FlowDesignWorkspaceView: View {
 
     private var selectedCanvas: FlowDesignDocument.Canvas? {
         document.canvases.first { $0.id == selectedCanvasID }
+    }
+
+    private var documentTitle: Binding<String> {
+        Binding(
+            get: { document.title },
+            set: { document.updateTitle($0) }
+        )
+    }
+
+    private var appSynopsisBody: Binding<String> {
+        Binding(
+            get: { appSynopsisSection?.body ?? "" },
+            set: { body in
+                guard let sectionID = appSynopsisSection?.id else {
+                    return
+                }
+                document.updateTextSectionBody(sectionID: sectionID, body: body)
+            }
+        )
+    }
+
+    private var appSynopsisSection: TextSection? {
+        document.textSections.first { section in
+            section.owner.ownerType == .container
+                && section.owner.ownerID == document.appContainerID
+                && section.type == .appSynopsis
+        }
     }
 }
 

@@ -46,6 +46,57 @@ final class FlowDesignDocumentTests: XCTestCase {
         }
     }
 
+    func testDocumentTitleEditUpdatesRevisionAndTimestamp() {
+        var document = FlowDesignDocument.newUntitled()
+        let originalUpdatedAt = document.updatedAt
+        let editDate = Date(timeIntervalSince1970: 1_819_584_000)
+
+        document.updateTitle("Checkout Flow", updatedAt: editDate)
+        document.updateTitle("Checkout Flow", updatedAt: editDate.addingTimeInterval(60))
+
+        XCTAssertEqual(document.title, "Checkout Flow")
+        XCTAssertEqual(document.revision, 1)
+        XCTAssertEqual(document.updatedAt, editDate)
+        XCTAssertNotEqual(document.updatedAt, originalUpdatedAt)
+    }
+
+    func testTextSectionBodyEditUpdatesRevisionAndTimestamps() throws {
+        var document = FlowDesignDocument.newUntitled()
+        let sectionID = try XCTUnwrap(document.textSections.first?.id)
+        let originalUpdatedAt = document.updatedAt
+        let editDate = Date(timeIntervalSince1970: 1_819_584_000)
+
+        XCTAssertTrue(document.updateTextSectionBody(
+            sectionID: sectionID,
+            body: "This app documents checkout behavior.",
+            updatedAt: editDate
+        ))
+        XCTAssertTrue(document.updateTextSectionBody(
+            sectionID: sectionID,
+            body: "This app documents checkout behavior.",
+            updatedAt: editDate.addingTimeInterval(60)
+        ))
+
+        let section = try XCTUnwrap(document.textSections.first { $0.id == sectionID })
+        XCTAssertEqual(section.body, "This app documents checkout behavior.")
+        XCTAssertEqual(section.updatedAt, editDate)
+        XCTAssertEqual(document.revision, 1)
+        XCTAssertEqual(document.updatedAt, editDate)
+        XCTAssertNotEqual(document.updatedAt, originalUpdatedAt)
+    }
+
+    func testTextSectionBodyEditWithUnknownSectionDoesNotMutateDocument() {
+        var document = FlowDesignDocument.newUntitled()
+        let originalDocument = document
+
+        XCTAssertFalse(document.updateTextSectionBody(
+            sectionID: UUID(),
+            body: "Ignored text",
+            updatedAt: Date(timeIntervalSince1970: 1_819_584_000)
+        ))
+        XCTAssertEqual(document, originalDocument)
+    }
+
     func testDocumentJSONRoundTripsSemanticFlowData() throws {
         var document = FlowDesignDocument.newUntitled()
         let viewID = try XCTUnwrap(document.flowViews.first?.id)
@@ -118,10 +169,14 @@ final class FlowDesignDocumentTests: XCTestCase {
 
     func testDocumentPackageSaveAndLoadRoundTripsDocumentJSON() throws {
         var document = FlowDesignDocument.newUntitled()
-        document.title = "Checkout Flow"
+        document.updateTitle("Checkout Flow", updatedAt: Date(timeIntervalSince1970: 1_819_584_000))
         document.summary = "A local package document."
-        document.revision = 3
-        document.textSections[0].body = "Open the app, edit a flow, and save the package."
+        let sectionID = try XCTUnwrap(document.textSections.first?.id)
+        XCTAssertTrue(document.updateTextSectionBody(
+            sectionID: sectionID,
+            body: "Open the app, edit a flow, and save the package.",
+            updatedAt: Date(timeIntervalSince1970: 1_819_584_120)
+        ))
 
         let packageURL = temporaryPackageURL()
         try FlowDesignDocumentPackageStore.save(document, to: packageURL)
@@ -134,10 +189,16 @@ final class FlowDesignDocumentTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: packageURL.appendingPathComponent("previews").path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: packageURL.appendingPathComponent("provenance").path))
         XCTAssertEqual(loaded, document)
+        XCTAssertEqual(loaded.title, "Checkout Flow")
+        XCTAssertEqual(loaded.revision, 2)
         XCTAssertEqual(loaded.id, document.id)
         XCTAssertEqual(loaded.appContainerID, document.appContainerID)
         XCTAssertEqual(loaded.flowViews.map(\.id), document.flowViews.map(\.id))
         XCTAssertEqual(loaded.textSections.map(\.id), document.textSections.map(\.id))
+        XCTAssertEqual(
+            loaded.textSections.first { $0.id == sectionID }?.body,
+            "Open the app, edit a flow, and save the package."
+        )
     }
 
     func testDocumentPackageSavePreservesExistingSidecarFiles() throws {
