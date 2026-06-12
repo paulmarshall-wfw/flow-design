@@ -42,6 +42,21 @@ swift build
 swift test
 ```
 
+## Xcode App Bundle
+
+The repo keeps source in the SwiftPM-friendly `Sources/` and `Tests/` layout, then generates a local Xcode project for the macOS app bundle:
+
+```bash
+python3 scripts/generate_xcode_project.py
+xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO build
+```
+
+Launch and verify the generated app bundle with:
+
+```bash
+./scripts/build_and_run.sh --verify
+```
+
 ## App Bundle
 
-This scaffold keeps the source tree package-based so core code can be built and tested immediately. Create an Xcode app project or project-generation step when the bundle, signing, entitlements, document types, and asset catalog settings are ready to be made concrete.
+The app-bundle path is now concrete: `scripts/generate_xcode_project.py` generates `FlowDesign.xcodeproj`, which builds `FlowDesign.app` from the existing source layout. Early stack and architecture decisions are tracked in [Technical Decisions](docs/technical-decisions.md).

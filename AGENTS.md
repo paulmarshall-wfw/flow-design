@@ -24,11 +24,14 @@ Prefer explicit user intent over convenience defaults. Defaults may suggest valu
 ## Repo Workflow Notes
 
 - Install command: no dependency install is currently required.
-- Development command: no app-bundle launch command exists yet.
+- Development command: `./scripts/build_and_run.sh --verify`
 - Test command: `swift test`
 - Lint or typecheck command: no dedicated lint command exists yet.
 - Build command: `swift build`
-- Full verification command: run `swift build` and `swift test`.
+- Xcode project generation command: `python3 scripts/generate_xcode_project.py`
+- Xcode app build command: `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO build`
+- Xcode app test command: `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO test`
+- Full verification command: run `swift build`, `swift test`, generate the Xcode project, then run the Xcode app build and test commands.
 
 ## Runtime Notes
 
@@ -39,6 +42,7 @@ Prefer explicit user intent over convenience defaults. Defaults may suggest valu
 - Important environment variables: none defined yet.
 - External services: none.
 - Background jobs or workers: none.
+- App bundle output: `.build/XcodeDerivedData/Build/Products/Debug/FlowDesign.app`.
 
 ## Port Registry
 
@@ -69,7 +73,8 @@ python3 "/Users/paulmarshall/Software Development/All Standards/scripts/check-lo
 - Authentication model: none.
 - Storage model: not defined yet.
 - UI direction: Apple-native SwiftUI shell with AppKit interop for PaperKit.
-- Release boundaries: no version source of truth has been established yet.
+- App-bundle path: generated Xcode project from SwiftPM-friendly source layout; see `docs/technical-decisions.md`.
+- Release boundaries: local unsigned Build Mode only; no signed release, notarization, or distribution path exists yet.
 
 ## Agent Notes
 
