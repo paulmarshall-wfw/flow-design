@@ -17,3 +17,4 @@ xcuserdata/
 .env
 .env.*
 !.env.example
+archive/

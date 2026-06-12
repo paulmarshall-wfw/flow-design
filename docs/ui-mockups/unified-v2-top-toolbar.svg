@@ -1,0 +1,293 @@
+<svg viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Unified Design v2: Top Toolbar, No Views Panel</title>
+  <desc>Full-canvas workspace with toolbar moved to top. Views accessed via File menu. Inspector and sticky text as floating panels. Mode switcher and zoom in the toolbar below the menu bar.</desc>
+
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; }
+    .title-bar-text { font-size: 13px; fill: #555; }
+    .menu-text { font-size: 12px; fill: #444; }
+    .section-label { font-size: 9px; fill: #777; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .node-text { font-size: 10px; fill: #333; text-anchor: middle; }
+    .float-title { font-size: 11px; font-weight: 600; fill: #222; }
+    .float-text-body { font-size: 10.5px; fill: #444; }
+    .inspector-label { font-size: 9.5px; fill: #888; font-weight: 500; }
+    .link-text { font-size: 10.5px; fill: #0071e3; cursor: pointer; }
+    .badge { font-size: 9px; fill: #fff; font-weight: 600; }
+    .mode-label { font-size: 10px; font-weight: 600; }
+    .bounding-label { font-size: 13px; font-weight: 600; }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L7,2.5 L0,5 Z" fill="#999"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="rgba(0,0,0,0.15)"/>
+    </filter>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="0.8" fill="#d4d4d8"/>
+    </pattern>
+  </defs>
+
+  <!-- Window background -->
+  <rect x="0" y="0" width="1200" height="780" rx="10" fill="#f5f5f7" stroke="#c0c0c5" stroke-width="1.5"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="1200" height="38" rx="10" fill="#dcdce2"/>
+  <rect x="0" y="10" width="1200" height="28" fill="#dcdce2"/>
+  <circle cx="20" cy="19" r="6" fill="#ff5f57"/>
+  <circle cx="40" cy="19" r="6" fill="#febc2e"/>
+  <circle cx="60" cy="19" r="6" fill="#28c840"/>
+  <text x="600" y="23" text-anchor="middle" class="title-bar-text" font-weight="500">Flow Design — Customer Onboarding Flow</text>
+
+  <!-- Menu bar -->
+  <rect x="0" y="38" width="1200" height="26" fill="#e2e2e8"/>
+  <line x1="0" y1="64" x2="1200" y2="64" stroke="#c0c0c5" stroke-width="1"/>
+  <text x="16" y="55" class="menu-text" font-weight="600">Flow Design</text>
+  <text x="100" y="55" class="menu-text">File</text>
+  <text x="132" y="55" class="menu-text">Edit</text>
+  <text x="164" y="55" class="menu-text">View</text>
+  <text x="200" y="55" class="menu-text">Arrange</text>
+  <text x="252" y="55" class="menu-text">Format</text>
+  <text x="300" y="55" class="menu-text">Review</text>
+  <text x="348" y="55" class="menu-text">Window</text>
+  <text x="404" y="55" class="menu-text">Help</text>
+
+  <!-- TOP TOOLBAR -->
+  <rect x="0" y="64" width="1200" height="38" fill="#ededf2"/>
+  <line x1="0" y1="102" x2="1200" y2="102" stroke="#c0c0c5" stroke-width="1"/>
+
+  <!-- Left: Panel toggles -->
+  <rect x="16" y="72" width="24" height="24" rx="5" fill="#c8ddf5" stroke="#0071e3" stroke-width="0.5"/>
+  <text x="28" y="88" text-anchor="middle" font-size="11" fill="#0071e3" font-weight="600">I</text>
+  <rect x="46" y="72" width="24" height="24" rx="5" fill="#c8ddf5" stroke="#0071e3" stroke-width="0.5"/>
+  <text x="58" y="88" text-anchor="middle" font-size="11" fill="#0071e3" font-weight="600">T</text>
+  <text x="80" y="88" font-size="9" fill="#999">Panels</text>
+
+  <line x1="120" y1="70" x2="120" y2="96" stroke="#ccc" stroke-width="0.5"/>
+
+  <!-- Center: Mode switcher -->
+  <rect x="340" y="71" width="380" height="26" rx="6" fill="#d6d6dc" stroke="#c0c0c5" stroke-width="0.5"/>
+  <rect x="344" y="74" width="62" height="20" rx="5" fill="#0071e3"/>
+  <text x="375" y="88" text-anchor="middle" class="mode-label" fill="#fff">Edit</text>
+  <text x="442" y="88" text-anchor="middle" class="mode-label" fill="#777">Validate</text>
+  <text x="515" y="88" text-anchor="middle" class="mode-label" fill="#777">Trace</text>
+  <text x="588" y="88" text-anchor="middle" class="mode-label" fill="#777">Review</text>
+  <rect x="612" y="77" width="14" height="14" rx="7" fill="#ff9500"/>
+  <text x="619" y="87" text-anchor="middle" class="badge">1</text>
+  <text x="676" y="88" text-anchor="middle" class="mode-label" fill="#777">Export</text>
+
+  <line x1="740" y1="70" x2="740" y2="96" stroke="#ccc" stroke-width="0.5"/>
+
+  <!-- Right: Zoom controls -->
+  <rect x="756" y="73" width="22" height="22" rx="4" fill="#d6d6dc"/>
+  <text x="767" y="88" text-anchor="middle" font-size="13" fill="#666">−</text>
+  <text x="806" y="88" text-anchor="middle" font-size="10" fill="#555" font-weight="500">100%</text>
+  <rect x="838" y="73" width="22" height="22" rx="4" fill="#d6d6dc"/>
+  <text x="849" y="88" text-anchor="middle" font-size="13" fill="#666">+</text>
+  <rect x="868" y="73" width="32" height="22" rx="4" fill="#d6d6dc"/>
+  <text x="884" y="88" text-anchor="middle" font-size="10" fill="#666">Fit</text>
+
+  <line x1="914" y1="70" x2="914" y2="96" stroke="#ccc" stroke-width="0.5"/>
+
+  <!-- Status -->
+  <circle cx="930" cy="84" r="4" fill="#ff9500"/>
+  <text x="940" y="88" font-size="10" fill="#888">Draft</text>
+  <text x="974" y="88" font-size="10" fill="#bbb">·</text>
+  <text x="984" y="88" font-size="10" fill="#888">App Overview</text>
+  <text x="1060" y="88" font-size="10" fill="#bbb">·</text>
+  <text x="1070" y="88" font-size="10" fill="#888">10 elements</text>
+
+  <!-- AI button -->
+  <rect x="1130" y="72" width="54" height="24" rx="6" fill="#0071e3"/>
+  <text x="1157" y="88" text-anchor="middle" font-size="10" fill="#fff" font-weight="500">Ask AI</text>
+
+  <!-- FULL-BLEED CANVAS -->
+  <rect x="0" y="102" width="1200" height="678" fill="#ffffff"/>
+  <rect x="0" y="102" width="1200" height="678" fill="url(#grid)"/>
+
+  <!-- APP BOUNDING BOX -->
+  <rect x="80" y="124" width="840" height="630" rx="16" fill="#e8f0fc" stroke="#5eaaff" stroke-width="1.5" stroke-dasharray="8,4"/>
+  <!-- Bounding box label -->
+  <rect x="92" y="114" width="210" height="24" rx="5" fill="#fff" stroke="#b0cff0" stroke-width="0.5"/>
+  <text x="105" y="131" class="bounding-label" fill="#2a7de1">Customer Onboarding</text>
+  <!-- Selection handles -->
+  <rect x="77" y="121" width="846" height="636" rx="18" fill="none" stroke="#0071e3" stroke-width="2" stroke-dasharray="6,3" opacity="0.6"/>
+  <rect x="73" y="117" width="10" height="10" rx="2" fill="#0071e3"/>
+  <rect x="917" y="117" width="10" height="10" rx="2" fill="#0071e3"/>
+  <rect x="73" y="751" width="10" height="10" rx="2" fill="#0071e3"/>
+  <rect x="917" y="751" width="10" height="10" rx="2" fill="#0071e3"/>
+
+  <!-- FLOWCHART -->
+
+  <!-- Start -->
+  <ellipse cx="500" cy="172" rx="52" ry="18" fill="#d4f5dc" stroke="#34c759" stroke-width="1.5"/>
+  <text x="500" y="176" class="node-text" fill="#1a7e2e" font-weight="500">Start</text>
+
+  <!-- Visit Landing -->
+  <line x1="500" y1="190" x2="500" y2="218" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="430" y="218" width="140" height="36" rx="6" fill="#deeafa" stroke="#007aff" stroke-width="1.2"/>
+  <text x="500" y="240" class="node-text">Visit Landing Page</text>
+
+  <!-- Create Account -->
+  <line x1="500" y1="254" x2="500" y2="282" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="430" y="282" width="140" height="36" rx="6" fill="#deeafa" stroke="#007aff" stroke-width="1.2"/>
+  <text x="500" y="304" class="node-text">Create Account</text>
+
+  <!-- Email Verified? -->
+  <line x1="500" y1="318" x2="500" y2="348" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <polygon points="500,348 566,382 500,416 434,382" fill="#ffecd0" stroke="#ff9500" stroke-width="1.2"/>
+  <text x="500" y="386" class="node-text" fill="#995a00">Email Verified?</text>
+
+  <!-- Yes → Complete Profile -->
+  <line x1="500" y1="416" x2="500" y2="448" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="508" y="436" font-size="9" fill="#1a7e2e" font-weight="600">Yes</text>
+  <rect x="430" y="448" width="140" height="36" rx="6" fill="#deeafa" stroke="#007aff" stroke-width="1.2"/>
+  <text x="500" y="470" class="node-text">Complete Profile</text>
+
+  <!-- No → Send Reminder -->
+  <line x1="566" y1="382" x2="700" y2="382" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="626" y="374" font-size="9" fill="#cc2d25" font-weight="600">No</text>
+  <rect x="700" y="364" width="126" height="36" rx="6" fill="#ffecd0" stroke="#ff9500" stroke-width="1.2"/>
+  <text x="763" y="386" class="node-text" fill="#995a00">Send Reminder</text>
+  <line x1="763" y1="400" x2="763" y2="428" stroke="#999" stroke-width="1"/>
+  <line x1="763" y1="428" x2="586" y2="428" stroke="#999" stroke-width="1"/>
+  <line x1="586" y1="428" x2="586" y2="382" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- KYC Required? -->
+  <line x1="500" y1="484" x2="500" y2="516" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <polygon points="500,516 566,550 500,584 434,550" fill="#ffecd0" stroke="#ff9500" stroke-width="1.2"/>
+  <text x="500" y="554" class="node-text" fill="#995a00">KYC Required?</text>
+
+  <!-- Yes → KYC -->
+  <line x1="434" y1="550" x2="326" y2="550" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="382" y="542" font-size="9" fill="#1a7e2e" font-weight="600">Yes</text>
+  <rect x="196" y="532" width="130" height="36" rx="6" fill="#efe0f7" stroke="#af52de" stroke-width="1.2"/>
+  <text x="261" y="554" class="node-text" fill="#7b3a9e">KYC Verification</text>
+
+  <!-- Submit Docs -->
+  <line x1="261" y1="568" x2="261" y2="596" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="196" y="596" width="130" height="36" rx="6" fill="#efe0f7" stroke="#af52de" stroke-width="1.2"/>
+  <text x="261" y="618" class="node-text" fill="#7b3a9e">Submit Documents</text>
+
+  <!-- KYC Approved? -->
+  <line x1="261" y1="632" x2="261" y2="656" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <polygon points="261,656 311,680 261,704 211,680" fill="#ffecd0" stroke="#ff9500" stroke-width="1"/>
+  <text x="261" y="684" class="node-text" fill="#995a00" font-size="9">Approved?</text>
+  <line x1="311" y1="680" x2="450" y2="680" stroke="#999" stroke-width="1"/>
+  <text x="370" y="672" font-size="9" fill="#1a7e2e" font-weight="600">Yes</text>
+
+  <!-- KYC Rejected -->
+  <line x1="261" y1="704" x2="261" y2="726" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="268" y="718" font-size="9" fill="#cc2d25" font-weight="600">No</text>
+  <ellipse cx="261" cy="744" rx="46" ry="16" fill="#fcdcdb" stroke="#ff3b30" stroke-width="1.2"/>
+  <text x="261" y="748" class="node-text" fill="#cc2d25" font-size="9">KYC Rejected</text>
+
+  <!-- No KYC → End -->
+  <line x1="500" y1="584" x2="500" y2="660" stroke="#999" stroke-width="1"/>
+  <text x="508" y="606" font-size="9" fill="#1a7e2e" font-weight="600">No</text>
+
+  <!-- Converge -->
+  <line x1="450" y1="680" x2="500" y2="680" stroke="#999" stroke-width="1"/>
+  <line x1="500" y1="660" x2="500" y2="680" stroke="#999" stroke-width="1"/>
+  <line x1="500" y1="680" x2="500" y2="718" stroke="#999" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- End -->
+  <ellipse cx="500" cy="740" rx="52" ry="18" fill="#d4f5dc" stroke="#34c759" stroke-width="1.5"/>
+  <text x="500" y="744" class="node-text" fill="#1a7e2e" font-weight="500">Onboarded</text>
+
+  <!-- FLOATING: Inspector -->
+  <g filter="url(#shadow)">
+    <rect x="958" y="116" width="228" height="430" rx="10" fill="#ffffff" stroke="#c0c0c5" stroke-width="1"/>
+
+    <!-- Header -->
+    <rect x="958" y="116" width="228" height="28" rx="10" fill="#e8e8ee"/>
+    <rect x="958" y="134" width="228" height="10" fill="#e8e8ee"/>
+    <text x="972" y="135" class="float-title" font-size="10">Inspector</text>
+    <text x="1172" y="135" text-anchor="end" font-size="13" fill="#999">−</text>
+
+    <!-- Selected element -->
+    <text x="972" y="164" font-size="13" fill="#222" font-weight="600">Customer Onboarding</text>
+    <text x="972" y="180" class="inspector-label">Type: App Container</text>
+
+    <line x1="972" y1="192" x2="1172" y2="192" stroke="#ddd" stroke-width="0.5"/>
+
+    <!-- TEXT SECTIONS -->
+    <text x="972" y="208" class="section-label">Text Sections</text>
+
+    <!-- Synopsis — open (highlighted) -->
+    <rect x="972" y="216" width="200" height="28" rx="5" fill="#d4e6fa" stroke="#0071e3" stroke-width="1"/>
+    <text x="986" y="234" class="link-text" font-weight="600">App Synopsis</text>
+    <circle cx="1160" cy="230" r="5" fill="#0071e3"/>
+
+    <!-- Features -->
+    <rect x="972" y="250" width="200" height="28" rx="5" fill="#f0f0f4" stroke="#d0d0d5" stroke-width="0.5"/>
+    <text x="986" y="268" class="link-text">Major Features</text>
+    <text x="1160" y="268" text-anchor="end" font-size="9" fill="#aaa">4 items</text>
+
+    <!-- Happy Path -->
+    <rect x="972" y="284" width="200" height="28" rx="5" fill="#f0f0f4" stroke="#d0d0d5" stroke-width="0.5"/>
+    <text x="986" y="302" class="link-text">Happy Path</text>
+    <text x="1160" y="302" text-anchor="end" font-size="9" fill="#aaa">6 steps</text>
+
+    <!-- Logic -->
+    <rect x="972" y="318" width="200" height="28" rx="5" fill="#f0f0f4" stroke="#d0d0d5" stroke-width="0.5"/>
+    <text x="986" y="336" class="link-text">Logic Notes</text>
+    <text x="1160" y="336" text-anchor="end" font-size="9" fill="#aaa">—</text>
+
+    <line x1="972" y1="358" x2="1172" y2="358" stroke="#ddd" stroke-width="0.5"/>
+
+    <!-- Code Links -->
+    <text x="972" y="376" class="section-label">Code Links</text>
+    <text x="972" y="394" font-size="10" fill="#0071e3">package.json</text>
+    <text x="972" y="412" font-size="10" fill="#0071e3">src/onboarding/</text>
+    <text x="972" y="430" font-size="10" fill="#0071e3">+ Add link</text>
+
+    <line x1="972" y1="442" x2="1172" y2="442" stroke="#ddd" stroke-width="0.5"/>
+
+    <!-- Validation -->
+    <text x="972" y="460" class="section-label">Validation</text>
+    <circle cx="982" cy="476" r="5" fill="#ff9500"/>
+    <text x="994" y="480" font-size="10" fill="#995a00">2 warnings in this flow</text>
+    <circle cx="982" cy="496" r="5" fill="#34c759"/>
+    <text x="994" y="500" font-size="10" fill="#1a7e2e">10 elements connected</text>
+
+    <line x1="972" y1="512" x2="1172" y2="512" stroke="#ddd" stroke-width="0.5"/>
+
+    <!-- Provenance -->
+    <text x="972" y="530" class="section-label">Provenance</text>
+    <text x="972" y="546" font-size="10" fill="#888">User-authored · Jun 10, 2026</text>
+  </g>
+
+  <!-- FLOATING: Sticky Text Panel -->
+  <g filter="url(#shadow)">
+    <rect x="700" y="116" width="248" height="260" rx="10" fill="#ffffff" stroke="#c0c0c5" stroke-width="1"/>
+
+    <!-- Header -->
+    <rect x="700" y="116" width="248" height="28" rx="10" fill="#e8e8ee"/>
+    <rect x="700" y="134" width="248" height="10" fill="#e8e8ee"/>
+    <text x="714" y="135" class="float-title" font-size="10">App Synopsis</text>
+    <text x="934" y="135" text-anchor="end" font-size="9" fill="#999">Customer Onboarding</text>
+
+    <!-- Text content -->
+    <text x="714" y="166" class="float-text-body">This flow describes the end-to-end</text>
+    <text x="714" y="182" class="float-text-body">customer onboarding process, from</text>
+    <text x="714" y="198" class="float-text-body">initial landing page visit through</text>
+    <text x="714" y="214" class="float-text-body">account creation, email verification,</text>
+    <text x="714" y="230" class="float-text-body">optional KYC compliance check, and</text>
+    <text x="714" y="246" class="float-text-body">profile completion.</text>
+
+    <text x="714" y="272" class="float-text-body">It serves as the canonical reference</text>
+    <text x="714" y="288" class="float-text-body">for the signup implementation across</text>
+    <text x="714" y="304" class="float-text-body">web and mobile clients.</text>
+
+    <line x1="714" y1="320" x2="934" y2="320" stroke="#ddd" stroke-width="0.5"/>
+    <rect x="714" y="328" width="76" height="20" rx="4" fill="#d4e6fa" stroke="#0071e3" stroke-width="0.5"/>
+    <text x="752" y="342" text-anchor="middle" font-size="9" fill="#0071e3" font-weight="500">App Overview</text>
+    <text x="714" y="366" font-size="9" fill="#aaa">Updates with selection</text>
+  </g>
+
+  <!-- Connector between inspector Synopsis row and text panel -->
+  <line x1="948" y1="230" x2="972" y2="230" stroke="#0071e3" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+
+</svg>
