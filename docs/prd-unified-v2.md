@@ -14,6 +14,7 @@ This PRD supersedes `docs/prd.md` for forward product planning without modifying
 
 - `docs/prd.md`
 - `docs/ux-design.md`
+- `docs/flow-design-and-state-workflow-definitions.md` (local path: `/Users/paulmarshall/Software Development/flow-design/docs/flow-design-and-state-workflow-definitions.md`)
 - `docs/ui-mockups/unified-v2-description.md`
 - `docs/ui-mockups/unified-v2-top-toolbar.svg`
 
@@ -902,6 +903,7 @@ Phase 1 and Phase 2 acceptance criteria:
 - Generated implementation plan: turn an accepted flow into a build plan, task list, or work-order style checklist.
 - Import from text: paste a PRD, README, or rough notes and generate a structured starting flow.
 - Import from JSON: select a `.json` file and generate a structured starting flow.
+- State-workflow definition integration: implement the future complementary model defined in [Flow Design And State Workflow Definitions](flow-design-and-state-workflow-definitions.md), so Flow Design can import, visualize, review, validate, map, and export strict state-workflow definition bundles without treating them as the Flow Design document source of truth.
 - State ownership labels: mark whether a step is user action, UI state, backend state, external service, background job, or AI action.
 - Reusable component palette: saved modules like auth flow, import flow, review queue, document save, and AI proposal review.
 - User-defined visual themes or element styling once semantic behavior is stable.
