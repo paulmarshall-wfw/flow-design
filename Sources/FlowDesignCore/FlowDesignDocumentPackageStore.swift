@@ -36,6 +36,77 @@ public enum FlowDesignDocumentPackageStore {
         return try FlowDesignDocument.decodeDocumentJSON(from: data)
     }
 
+    public static func load(from packageFileWrapper: FileWrapper) throws -> FlowDesignDocument {
+        guard packageFileWrapper.isDirectory else {
+            throw FlowDesignDocumentPackageError.packageFileWrapperIsNotDirectory
+        }
+
+        guard
+            let documentFileWrapper = packageFileWrapper.fileWrappers?[FlowDesignDocument.documentJSONFileName],
+            let data = documentFileWrapper.regularFileContents
+        else {
+            throw FlowDesignDocumentPackageError.missingDocumentJSONFileWrapper
+        }
+
+        return try FlowDesignDocument.decodeDocumentJSON(from: data)
+    }
+
+    public static func makeFileWrapper(
+        for document: FlowDesignDocument,
+        preservingSidecarsFrom sidecarMembers: [String: FlowDesignPackageMember] = [:]
+    ) throws -> FileWrapper {
+        var fileWrappers = sidecarMembers.mapValues { fileWrapper(from: $0) }
+
+        fileWrappers[FlowDesignDocument.documentJSONFileName] = FileWrapper(
+            regularFileWithContents: try document.encodedDocumentJSON()
+        )
+
+        for directoryName in [
+            paperKitDirectoryName,
+            previewsDirectoryName,
+            provenanceDirectoryName
+        ] where fileWrappers[directoryName] == nil {
+            fileWrappers[directoryName] = FileWrapper(directoryWithFileWrappers: [:])
+        }
+
+        return FileWrapper(directoryWithFileWrappers: fileWrappers)
+    }
+
+    public static func sidecarMembers(
+        in packageFileWrapper: FileWrapper
+    ) -> [String: FlowDesignPackageMember] {
+        packageFileWrapper.fileWrappers?.compactMapValues { packageMember(from: $0) }.filter { fileName, _ in
+            fileName != FlowDesignDocument.documentJSONFileName
+        } ?? [:]
+    }
+
+    private static func packageMember(
+        from fileWrapper: FileWrapper
+    ) -> FlowDesignPackageMember? {
+        if fileWrapper.isDirectory {
+            return .directory(
+                fileWrapper.fileWrappers?.compactMapValues { packageMember(from: $0) } ?? [:]
+            )
+        }
+
+        if fileWrapper.isRegularFile, let data = fileWrapper.regularFileContents {
+            return .regularFile(data)
+        }
+
+        return nil
+    }
+
+    private static func fileWrapper(
+        from packageMember: FlowDesignPackageMember
+    ) -> FileWrapper {
+        switch packageMember {
+        case .regularFile(let data):
+            FileWrapper(regularFileWithContents: data)
+        case .directory(let members):
+            FileWrapper(directoryWithFileWrappers: members.mapValues { fileWrapper(from: $0) })
+        }
+    }
+
     private static func preparePackageDirectory(
         at packageURL: URL,
         fileManager: FileManager
@@ -75,7 +146,14 @@ public enum FlowDesignDocumentPackageStore {
     }
 }
 
+public enum FlowDesignPackageMember: Equatable, Sendable {
+    case regularFile(Data)
+    case directory([String: FlowDesignPackageMember])
+}
+
 public enum FlowDesignDocumentPackageError: Error, Equatable, Sendable {
     case missingDocumentJSON(URL)
+    case missingDocumentJSONFileWrapper
     case packageURLIsFile(URL)
+    case packageFileWrapperIsNotDirectory
 }

@@ -19,6 +19,7 @@
 		A0010000000000000000000A /* FlowDesignCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00100000000000000000031 /* FlowDesignCore.framework */; };
 		A0010000000000000000000B /* FlowDesignCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00100000000000000000031 /* FlowDesignCore.framework */; };
 		A0010000000000000000000C /* FlowDesignDocumentPackageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000000000028 /* FlowDesignDocumentPackageStore.swift */; };
+		A0010000000000000000000D /* FlowDesignFileDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000000000029 /* FlowDesignFileDocument.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		A00100000000000000000026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A00100000000000000000027 /* FlowDesign.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlowDesign.entitlements; sourceTree = "<group>"; };
 		A00100000000000000000028 /* FlowDesignDocumentPackageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDesignDocumentPackageStore.swift; sourceTree = "<group>"; };
+		A00100000000000000000029 /* FlowDesignFileDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDesignFileDocument.swift; sourceTree = "<group>"; };
 		A00100000000000000000031 /* FlowDesignCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlowDesignCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00100000000000000000032 /* FlowDesignPaperKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlowDesignPaperKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00100000000000000000033 /* FlowDesignCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowDesignCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,7 +88,7 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		A00100000000000000000092 /* FlowDesignApp */ = {isa = PBXGroup; children = (A00100000000000000000021 /* FlowDesignApp.swift */, ); path = FlowDesignApp; sourceTree = "<group>"; };
+		A00100000000000000000092 /* FlowDesignApp */ = {isa = PBXGroup; children = (A00100000000000000000021 /* FlowDesignApp.swift */, A00100000000000000000029 /* FlowDesignFileDocument.swift */, ); path = FlowDesignApp; sourceTree = "<group>"; };
 		A00100000000000000000093 /* FlowDesignCore */ = {isa = PBXGroup; children = (A00100000000000000000022 /* FlowDesignDocument.swift */, A00100000000000000000028 /* FlowDesignDocumentPackageStore.swift */, ); path = FlowDesignCore; sourceTree = "<group>"; };
 		A00100000000000000000094 /* FlowDesignPaperKit */ = {isa = PBXGroup; children = (A00100000000000000000023 /* PaperMarkupHost.swift */, ); path = FlowDesignPaperKit; sourceTree = "<group>"; };
 		A00100000000000000000095 /* Tests */ = {isa = PBXGroup; children = (A00100000000000000000096 /* FlowDesignCoreTests */, ); path = Tests; sourceTree = "<group>"; };
@@ -174,7 +176,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A001000000000000000000A0 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000001 /* FlowDesignApp.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		A001000000000000000000A0 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000001 /* FlowDesignApp.swift in Sources */, A0010000000000000000000D /* FlowDesignFileDocument.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 		A001000000000000000000A1 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000002 /* FlowDesignDocument.swift in Sources */, A0010000000000000000000C /* FlowDesignDocumentPackageStore.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 		A001000000000000000000A2 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000003 /* PaperMarkupHost.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 		A001000000000000000000A3 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000004 /* FlowDesignDocumentTests.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };

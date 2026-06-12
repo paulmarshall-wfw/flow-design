@@ -34,6 +34,9 @@ This file records early implementation decisions that should be settled before p
   - `provenance/`: optional generation records, source scans, and task-run summaries.
 - Save/reopen must preserve semantic IDs, flow views, layout, text sections, connections, validation state, and proposal records.
 - If semantic JSON and PaperKit data disagree, semantic JSON wins and PaperKit data is marked stale or regenerated.
+- The app uses SwiftUI `DocumentGroup` with a `FileDocument` wrapper for native New/Open/Save handling of `.flowdesign` package documents.
+- `FlowDesignDocumentPackageStore` owns both URL-based package persistence and FileWrapper-based package read/write helpers so app document lifecycle code does not duplicate package shape rules.
+- FileWrapper saves replace `document.json`, ensure reserved package directories exist, and carry forward sidecar package members captured during open.
 
 ## Serialization And Schema Versioning
 
@@ -56,6 +59,7 @@ This file records early implementation decisions that should be settled before p
 ## UI Architecture
 
 - `FlowDesignApp` owns window, scene, native commands, toolbar, panel visibility, and document lifecycle.
+- `FlowDesignApp` presents `.flowdesign` documents through `DocumentGroup`; document scene state such as selected canvas is window-scoped, while semantic document data remains inside the bound file document.
 - `FlowDesignCore` owns document, schema, validation, proposal, provenance, and persistence-safe types with no UI framework dependencies.
 - `FlowDesignPaperKit` owns PaperKit/AppKit/SwiftUI bridge code.
 - The main workspace is a full-canvas SwiftUI surface with floating Inspector and Text panels.

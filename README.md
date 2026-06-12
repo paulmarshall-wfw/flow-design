@@ -60,3 +60,7 @@ Launch and verify the generated app bundle with:
 ## App Bundle
 
 The app-bundle path is now concrete: `scripts/generate_xcode_project.py` generates `FlowDesign.xcodeproj`, which builds `FlowDesign.app` from the existing source layout. Early stack and architecture decisions are tracked in [Technical Decisions](docs/technical-decisions.md).
+
+## Document Lifecycle
+
+Flow Design registers `.flowdesign` as a native macOS package document type. The app shell now uses SwiftUI `DocumentGroup` for New/Open/Save, with `document.json` as the semantic source of truth inside each package and reserved `paperkit`, `previews`, and `provenance` sidecar directories managed by the core package store.

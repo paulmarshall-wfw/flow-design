@@ -157,6 +157,46 @@ final class FlowDesignDocumentTests: XCTestCase {
         XCTAssertEqual(try FlowDesignDocumentPackageStore.load(from: packageURL), document)
     }
 
+    func testDocumentPackageFileWrapperRoundTripsDocumentJSON() throws {
+        var document = FlowDesignDocument.newUntitled()
+        document.title = "Native Save Flow"
+        document.summary = "Saved through SwiftUI document file wrappers."
+        document.revision = 7
+
+        let packageFileWrapper = try FlowDesignDocumentPackageStore.makeFileWrapper(for: document)
+        let loaded = try FlowDesignDocumentPackageStore.load(from: packageFileWrapper)
+        let fileWrappers = try XCTUnwrap(packageFileWrapper.fileWrappers)
+
+        XCTAssertEqual(loaded, document)
+        XCTAssertEqual(loaded.id, document.id)
+        XCTAssertEqual(loaded.flowViews.map(\.id), document.flowViews.map(\.id))
+        XCTAssertNotNil(fileWrappers[FlowDesignDocument.documentJSONFileName])
+        XCTAssertNotNil(fileWrappers["paperkit"])
+        XCTAssertNotNil(fileWrappers["previews"])
+        XCTAssertNotNil(fileWrappers["provenance"])
+    }
+
+    func testDocumentPackageFileWrapperPreservesSidecars() throws {
+        let document = FlowDesignDocument.newUntitled()
+        let sidecarFileWrapper = FileWrapper(regularFileWithContents: Data("cached view".utf8))
+        let packageFileWrapper = try FlowDesignDocumentPackageStore.makeFileWrapper(
+            for: document,
+            preservingSidecarsFrom: [
+                "paperkit": .directory([
+                    "cached-view.paperkit": .regularFile(try XCTUnwrap(sidecarFileWrapper.regularFileContents))
+                ]),
+                "custom-metadata.json": .regularFile(Data(#"{"owner":"tests"}"#.utf8))
+            ]
+        )
+        let sidecars = FlowDesignDocumentPackageStore.sidecarMembers(in: packageFileWrapper)
+
+        XCTAssertEqual(sidecars["paperkit"], .directory([
+            "cached-view.paperkit": .regularFile(Data("cached view".utf8))
+        ]))
+        XCTAssertEqual(sidecars["custom-metadata.json"], .regularFile(Data(#"{"owner":"tests"}"#.utf8)))
+        XCTAssertNil(sidecars[FlowDesignDocument.documentJSONFileName])
+    }
+
     func testLoadingPackageWithoutDocumentJSONFails() throws {
         let packageURL = temporaryPackageURL()
         try FileManager.default.createDirectory(at: packageURL, withIntermediateDirectories: true)
@@ -177,6 +217,18 @@ final class FlowDesignDocumentTests: XCTestCase {
             try FlowDesignDocumentPackageStore.save(.newUntitled(), to: packageURL)
         ) { error in
             XCTAssertEqual(error as? FlowDesignDocumentPackageError, .packageURLIsFile(packageURL))
+        }
+    }
+
+    func testLoadingPackageFileWrapperWithoutDocumentJSONFails() {
+        let packageFileWrapper = FileWrapper(directoryWithFileWrappers: [
+            "paperkit": FileWrapper(directoryWithFileWrappers: [:])
+        ])
+
+        XCTAssertThrowsError(
+            try FlowDesignDocumentPackageStore.load(from: packageFileWrapper)
+        ) { error in
+            XCTAssertEqual(error as? FlowDesignDocumentPackageError, .missingDocumentJSONFileWrapper)
         }
     }
 

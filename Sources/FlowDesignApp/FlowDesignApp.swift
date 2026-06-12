@@ -4,15 +4,9 @@ import SwiftUI
 
 @main
 struct FlowDesignApp: App {
-    @State private var document = FlowDesignDocument.newUntitled()
-    @State private var selectedCanvasID: FlowDesignDocument.Canvas.ID?
-
     var body: some Scene {
-        WindowGroup {
-            FlowDesignWorkspaceView(
-                document: document,
-                selectedCanvasID: $selectedCanvasID
-            )
+        DocumentGroup(newDocument: FlowDesignFileDocument()) { file in
+            FlowDesignDocumentSceneView(document: file.$document.flowDocument)
         }
         .commands {
             FlowDesignCommands()
@@ -20,8 +14,20 @@ struct FlowDesignApp: App {
     }
 }
 
+private struct FlowDesignDocumentSceneView: View {
+    @Binding var document: FlowDesignDocument
+    @State private var selectedCanvasID: FlowDesignDocument.Canvas.ID?
+
+    var body: some View {
+        FlowDesignWorkspaceView(
+            document: $document,
+            selectedCanvasID: $selectedCanvasID
+        )
+    }
+}
+
 private struct FlowDesignWorkspaceView: View {
-    let document: FlowDesignDocument
+    @Binding var document: FlowDesignDocument
     @Binding var selectedCanvasID: FlowDesignDocument.Canvas.ID?
 
     var body: some View {
@@ -56,7 +62,7 @@ private struct FlowDesignCommands: Commands {
     var body: some Commands {
         CommandGroup(after: .newItem) {
             Button("New Canvas") {
-                // Hook this into document mutation once persistence is defined.
+                // Hook this into document mutation once canvas editing is defined.
             }
             .disabled(true)
         }
