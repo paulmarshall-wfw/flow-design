@@ -115,4 +115,74 @@ final class FlowDesignDocumentTests: XCTestCase {
             XCTAssertEqual(error as? FlowDesignDocumentError, .unsupportedSchemaVersion("9.9.9"))
         }
     }
+
+    func testDocumentPackageSaveAndLoadRoundTripsDocumentJSON() throws {
+        var document = FlowDesignDocument.newUntitled()
+        document.title = "Checkout Flow"
+        document.summary = "A local package document."
+        document.revision = 3
+        document.textSections[0].body = "Open the app, edit a flow, and save the package."
+
+        let packageURL = temporaryPackageURL()
+        try FlowDesignDocumentPackageStore.save(document, to: packageURL)
+
+        let loaded = try FlowDesignDocumentPackageStore.load(from: packageURL)
+        let documentJSONURL = packageURL.appendingPathComponent(FlowDesignDocument.documentJSONFileName)
+
+        XCTAssertTrue(FileManager.default.fileExists(atPath: documentJSONURL.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: packageURL.appendingPathComponent("paperkit").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: packageURL.appendingPathComponent("previews").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: packageURL.appendingPathComponent("provenance").path))
+        XCTAssertEqual(loaded, document)
+        XCTAssertEqual(loaded.id, document.id)
+        XCTAssertEqual(loaded.appContainerID, document.appContainerID)
+        XCTAssertEqual(loaded.flowViews.map(\.id), document.flowViews.map(\.id))
+        XCTAssertEqual(loaded.textSections.map(\.id), document.textSections.map(\.id))
+    }
+
+    func testDocumentPackageSavePreservesExistingSidecarFiles() throws {
+        var document = FlowDesignDocument.newUntitled()
+        let packageURL = temporaryPackageURL()
+        let paperKitURL = packageURL.appendingPathComponent("paperkit", isDirectory: true)
+        let sidecarURL = paperKitURL.appendingPathComponent("cached-view.paperkit")
+
+        try FlowDesignDocumentPackageStore.save(document, to: packageURL)
+        try Data("cached paperkit payload".utf8).write(to: sidecarURL)
+
+        document.title = "Updated Flow"
+        document.revision = 1
+        try FlowDesignDocumentPackageStore.save(document, to: packageURL)
+
+        XCTAssertEqual(try String(contentsOf: sidecarURL, encoding: .utf8), "cached paperkit payload")
+        XCTAssertEqual(try FlowDesignDocumentPackageStore.load(from: packageURL), document)
+    }
+
+    func testLoadingPackageWithoutDocumentJSONFails() throws {
+        let packageURL = temporaryPackageURL()
+        try FileManager.default.createDirectory(at: packageURL, withIntermediateDirectories: true)
+
+        XCTAssertThrowsError(
+            try FlowDesignDocumentPackageStore.load(from: packageURL)
+        ) { error in
+            let documentURL = packageURL.appendingPathComponent(FlowDesignDocument.documentJSONFileName)
+            XCTAssertEqual(error as? FlowDesignDocumentPackageError, .missingDocumentJSON(documentURL))
+        }
+    }
+
+    func testSavingPackageToExistingFileFails() throws {
+        let packageURL = temporaryPackageURL()
+        try Data("not a package".utf8).write(to: packageURL)
+
+        XCTAssertThrowsError(
+            try FlowDesignDocumentPackageStore.save(.newUntitled(), to: packageURL)
+        ) { error in
+            XCTAssertEqual(error as? FlowDesignDocumentPackageError, .packageURLIsFile(packageURL))
+        }
+    }
+
+    private func temporaryPackageURL() -> URL {
+        FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+            .appendingPathExtension("flowdesign")
+    }
 }

@@ -29,6 +29,7 @@ PROJECT_PBXPROJ = """// !$*UTF8*$!
 \t\tA00100000000000000000009 /* FlowDesignPaperKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A00100000000000000000032 /* FlowDesignPaperKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 \t\tA0010000000000000000000A /* FlowDesignCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00100000000000000000031 /* FlowDesignCore.framework */; };
 \t\tA0010000000000000000000B /* FlowDesignCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00100000000000000000031 /* FlowDesignCore.framework */; };
+\t\tA0010000000000000000000C /* FlowDesignDocumentPackageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000000000028 /* FlowDesignDocumentPackageStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@ PROJECT_PBXPROJ = """// !$*UTF8*$!
 \t\tA00100000000000000000025 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 \t\tA00100000000000000000026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 \t\tA00100000000000000000027 /* FlowDesign.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlowDesign.entitlements; sourceTree = "<group>"; };
+\t\tA00100000000000000000028 /* FlowDesignDocumentPackageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDesignDocumentPackageStore.swift; sourceTree = "<group>"; };
 \t\tA00100000000000000000031 /* FlowDesignCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlowDesignCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 \t\tA00100000000000000000032 /* FlowDesignPaperKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlowDesignPaperKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 \t\tA00100000000000000000033 /* FlowDesignCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowDesignCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,7 +98,7 @@ PROJECT_PBXPROJ = """// !$*UTF8*$!
 \t\t\tsourceTree = "<group>";
 \t\t};
 \t\tA00100000000000000000092 /* FlowDesignApp */ = {isa = PBXGroup; children = (A00100000000000000000021 /* FlowDesignApp.swift */, ); path = FlowDesignApp; sourceTree = "<group>"; };
-\t\tA00100000000000000000093 /* FlowDesignCore */ = {isa = PBXGroup; children = (A00100000000000000000022 /* FlowDesignDocument.swift */, ); path = FlowDesignCore; sourceTree = "<group>"; };
+\t\tA00100000000000000000093 /* FlowDesignCore */ = {isa = PBXGroup; children = (A00100000000000000000022 /* FlowDesignDocument.swift */, A00100000000000000000028 /* FlowDesignDocumentPackageStore.swift */, ); path = FlowDesignCore; sourceTree = "<group>"; };
 \t\tA00100000000000000000094 /* FlowDesignPaperKit */ = {isa = PBXGroup; children = (A00100000000000000000023 /* PaperMarkupHost.swift */, ); path = FlowDesignPaperKit; sourceTree = "<group>"; };
 \t\tA00100000000000000000095 /* Tests */ = {isa = PBXGroup; children = (A00100000000000000000096 /* FlowDesignCoreTests */, ); path = Tests; sourceTree = "<group>"; };
 \t\tA00100000000000000000096 /* FlowDesignCoreTests */ = {isa = PBXGroup; children = (A00100000000000000000024 /* FlowDesignDocumentTests.swift */, ); path = FlowDesignCoreTests; sourceTree = "<group>"; };
@@ -184,7 +186,7 @@ PROJECT_PBXPROJ = """// !$*UTF8*$!
 
 /* Begin PBXSourcesBuildPhase section */
 \t\tA001000000000000000000A0 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000001 /* FlowDesignApp.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
-\t\tA001000000000000000000A1 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000002 /* FlowDesignDocument.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+\t\tA001000000000000000000A1 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000002 /* FlowDesignDocument.swift in Sources */, A0010000000000000000000C /* FlowDesignDocumentPackageStore.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 \t\tA001000000000000000000A2 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000003 /* PaperMarkupHost.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 \t\tA001000000000000000000A3 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00100000000000000000004 /* FlowDesignDocumentTests.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */

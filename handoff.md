@@ -3,33 +3,25 @@
 ## 1. Metadata
 - Project name: Flow Design
 - Handoff type: session end
-- Created timestamp UTC: 2026-06-12T06:56:08Z
+- Created timestamp UTC: 2026-06-12T07:11:33Z
 - Prepared by: Codex
 - Repository: `/Users/paulmarshall/Software Development/flow-design`
 - Branch or working context: `main`
-- Session scope: continuity refresh after generated Xcode app-bundle path, early technical decisions, and the first Phase 0 semantic document-model slice were added.
+- Session scope: next Phase 0 build slice adding native document package save/reopen support on top of the schema-versioned semantic model.
 
 ### Checkpoint Status
-- Git HEAD: `1030588`
+- Git HEAD: `6a1ea94`
 - Working tree: dirty
 - Dirty files intentionally in scope:
-  - `AGENTS.md`
-  - `README.md`
-  - `Sources/FlowDesignCore/FlowDesignDocument.swift`
+  - `FlowDesign.xcodeproj/project.pbxproj`
   - `Tests/FlowDesignCoreTests/FlowDesignDocumentTests.swift`
   - `docs/completed-tasks.md`
   - `handoff.md`
-  - `scripts/README.md`
+  - `scripts/generate_xcode_project.py`
 - Dirty files intentionally out of scope:
   - None
 - Untracked files intentionally in scope:
-  - `FlowDesign.xcodeproj/`
-  - `Resources/Assets.xcassets/Contents.json`
-  - `Resources/FlowDesign.entitlements`
-  - `Resources/Info.plist`
-  - `docs/technical-decisions.md`
-  - `scripts/build_and_run.sh`
-  - `scripts/generate_xcode_project.py`
+  - `Sources/FlowDesignCore/FlowDesignDocumentPackageStore.swift`
 - Untracked files intentionally out of scope:
   - None
 - Canonical files described:
@@ -37,76 +29,71 @@
   - `README.md`
   - `Package.swift`
   - `FlowDesign.xcodeproj/project.pbxproj`
-  - `FlowDesign.xcodeproj/xcshareddata/xcschemes/FlowDesign.xcscheme`
-  - `Resources/Info.plist`
-  - `Resources/FlowDesign.entitlements`
-  - `Resources/Assets.xcassets/Contents.json`
   - `docs/technical-decisions.md`
-  - `docs/prd-unified-v2.md`
-  - `docs/architecture.md`
-  - `docs/product-fundamentals.md`
-  - `docs/ux-design.md`
   - `docs/completed-tasks.md`
   - `handoff.md`
+  - `scripts/generate_xcode_project.py`
+  - `scripts/build_and_run.sh`
+  - `Sources/FlowDesignCore/FlowDesignDocument.swift`
+  - `Sources/FlowDesignCore/FlowDesignDocumentPackageStore.swift`
+  - `Tests/FlowDesignCoreTests/FlowDesignDocumentTests.swift`
 - Last verification:
-  - command: `swift build`; `swift test`; `python3 scripts/generate_xcode_project.py`; `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO build`; `xcodebuild ... test`; `./scripts/build_and_run.sh --verify`
+  - command: `swift build`; `swift test`; `python3 scripts/generate_xcode_project.py`; `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO build`; `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO test`; `./scripts/build_and_run.sh --verify`
   - result: passed
-  - timestamp UTC: 2026-06-12T06:56:08Z
+  - timestamp UTC: 2026-06-12T07:11:33Z
 - Handoff freshness: fresh-to-dirty-tree
-- Safe-to-continue basis: current `HEAD` is known, all dirty/untracked files are intentional app-bundle baseline and Phase 0 semantic-model work, and SwiftPM plus generated Xcode build/test/launch verification passed.
-- Next checkpoint action: commit the app-bundle path plus semantic-model slice, or intentionally leave this dirty tree as the next implementation base.
+- Safe-to-continue basis: package persistence has core tests, SwiftPM verification passes, the generated Xcode app-bundle path includes the new core source, Xcode build/test pass, and the native app launches.
+- Next checkpoint action: commit the semantic-model plus package-persistence dirty tree, or intentionally carry it as the next implementation base.
 
 ## 2. Executive Summary
-Flow Design now has a concrete native app-bundle path and the first Phase 0 semantic document model. The repo keeps its SwiftPM-friendly `Sources/` and `Tests/` layout, while `scripts/generate_xcode_project.py` generates `FlowDesign.xcodeproj` for the macOS app target.
+Flow Design now has the first native document package persistence boundary. `FlowDesignDocumentPackageStore` saves semantic documents into `.flowdesign` package directories using `document.json` as the source of truth, creates the reserved `paperkit`, `previews`, and `provenance` directories, reloads documents through the schema-versioned decoder, preserves existing sidecar files, and returns explicit errors for missing `document.json` or file paths used as package directories.
 
-The core document model now stores schema version `0.1.0`, lifecycle state, app container ID, flow views, flow containers, flow elements, connections, text sections, acceptance criteria, code links, validation findings, proposals, and provenance records as `Codable` `FlowDesignCore` types. `FlowDesignDocument.encodedDocumentJSON()` and `FlowDesignDocument.decodeDocumentJSON(from:)` are the first package-ready JSON boundary for future `document.json` save/reopen work.
+The app remains in local unsigned Build Mode. The SwiftUI shell still uses an in-memory untitled document; the new persistence code is core-layer infrastructure ready for the next slice that wires native open/save document lifecycle into the app.
 
-The early stack gaps are explicitly addressed in `docs/technical-decisions.md`: app bundle generation, signing/entitlements/document type/assets, document package persistence, schema versioning, PaperKit round-trip strategy, UI architecture, CI/static analysis, launch verification, and AI bridge lifecycle.
-
-Completed work history is tracked in `docs/completed-tasks.md`; do not duplicate it here. No `project-dossier.md` exists or was needed for this update.
+Completed work history is tracked in `docs/completed-tasks.md`; do not duplicate older entries here. No `project-dossier.md` exists.
 
 ## 3. Current Objective
-- Immediate goal: begin the next Phase 0 local-authoring implementation slice on top of the generated Xcode app-bundle and semantic-model baseline.
-- Intended finished state: document package save/reopen support that persists semantic JSON as `document.json` while keeping room for PaperKit package members.
-- Definition of done for the next slice: SwiftPM and Xcode verification pass, package save/reopen behavior has automated tests, and stable IDs survive JSON/package round trip.
+- Immediate goal: wire the core package store into native app document lifecycle.
+- Intended finished state: users can create, save, reopen, and edit `.flowdesign` package documents through the macOS app shell while semantic IDs survive round trips.
+- Definition of done for the next slice: SwiftPM and Xcode verification pass, app-level document lifecycle has automated coverage where practical, and manual launch verification confirms the app still opens.
 
 ## 4. Current State
 ### Working
 - SwiftPM build/test path exists through `swift build` and `swift test`.
 - Xcode app-bundle path exists through generated `FlowDesign.xcodeproj`.
 - `FlowDesign.app` builds from the generated Xcode project.
-- Xcode test scheme runs `FlowDesignCoreTests` successfully when outside the workspace sandbox.
-- Xcode static analysis passes for the generated scheme.
+- Xcode test scheme runs `FlowDesignCoreTests` successfully.
 - `./scripts/build_and_run.sh --verify` builds, launches, and verifies the native `FlowDesign` process.
 - `Resources/Info.plist` registers `.flowdesign` package documents using UTI `com.paulmarshall.flow-design.document`.
-- `Resources/FlowDesign.entitlements` exists and is intentionally empty for unsigned local Build Mode.
-- `Resources/Assets.xcassets/Contents.json` exists as the tracked asset-catalog root.
 - `FlowDesignCore` has a schema-versioned `Codable` semantic document model for `document.json`.
-- New untitled documents create the canonical app container, four initial flow views, app-level text sections, and view-level text sections.
-- JSON encode/decode round trip and unsupported schema-version behavior are covered by XCTest.
+- `FlowDesignDocumentPackageStore.save(_:to:)` creates or updates a package directory and writes `document.json` atomically.
+- Package save creates reserved `paperkit`, `previews`, and `provenance` directories without deleting existing sidecar files.
+- `FlowDesignDocumentPackageStore.load(from:)` reloads through `FlowDesignDocument.decodeDocumentJSON(from:)`, so unsupported schema handling remains centralized.
+- XCTest covers JSON round trip, unsupported schema version, package save/load, sidecar preservation, missing `document.json`, and invalid file-as-package paths.
 
 ### Partially Working
 - The app still shows the existing simple SwiftUI scaffold; it is not yet the full-canvas workspace from the UX docs.
-- `FlowDesignCore` now models the semantic flow graph and JSON boundary, but package read/write, migrations, validation rules, and document-scoped commands are not implemented yet.
-- PaperKit is available behind `FlowDesignPaperKit`, but structured flow element round-tripping is only a documented strategy.
+- Persistence is implemented in core, but not yet wired to `DocumentGroup`, `FileDocument`, menu commands, autosave, undo, or app window state.
+- PaperKit is available behind `FlowDesignPaperKit`, but structured flow element round-tripping remains a documented strategy and no PaperKit package payload is produced yet.
 - App icon assets are not final; add a reviewed icon before signed release or distribution work.
 
 ### Not Working Yet
-- No document package save/reopen lifecycle exists yet.
-- No schema migrations, deterministic validation execution, source-linked code links, proposal application, or document snapshot lifecycle exists yet.
+- No user-facing document package open/save lifecycle exists in the app shell yet.
+- No schema migrations beyond the current unsupported-version error path exist yet.
+- No deterministic validation execution, source-linked code links, proposal application, or document snapshot lifecycle exists yet.
 - No provider-backed AI runtime, task registry, prompt assets, source scanning, proposal application, or provider settings UI exists yet.
 - No CI workflow exists yet.
 - Optional Codex Run-button config was not created because `.codex` is read-only in this workspace.
 
 ### Not Yet Verified
-- Handoff freshness helper scripts do not exist, so freshness is grounded manually from Git status and file existence.
+- Handoff freshness helper scripts do not exist, so freshness is grounded manually from Git status, HEAD, file inspection, and verification results.
 
 ## 5. Active Constraints
 - Apply `AGENTS.md` project policy: Build Mode by default, numbered versions only, preserve explicit user intent, and do not commit/tag/release/publish/install/delete unless explicitly asked.
 - For repo maintenance, apply the engineering-project-standard skill.
 - For native app build/run/debug work, use the macOS build/run/debug workflow.
 - Start product build with local authoring, semantic document modeling, persistence, and native app workflow before provider-backed AI runtime work unless the user redirects.
-- `docs/technical-decisions.md` now owns the early technical decisions that were previously open.
+- `document.json` remains the semantic source of truth inside `.flowdesign` package documents.
 - Flow Design is a native macOS app; core local authoring, save/reopen, deterministic validation, and export must not depend on provider availability.
 - Provider calls must stay behind app-owned AI/invocation boundaries, not SwiftUI views, AppKit controllers, PaperKit adapters, or document save/load code.
 
@@ -120,41 +107,41 @@ Completed work history is tracked in `docs/completed-tasks.md`; do not duplicate
   - `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO build`
 - Xcode app-bundle tests:
   - `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO test`
-- Static analysis:
-  - `xcodebuild -project FlowDesign.xcodeproj -scheme FlowDesign -configuration Debug -destination 'platform=macOS' -derivedDataPath .build/XcodeDerivedData CODE_SIGNING_ALLOWED=NO analyze`
 - Native launch verification:
   - `./scripts/build_and_run.sh --verify`
 - Notes:
-  - Xcode emits CoreSimulator warnings on this machine, but macOS build/test/analyze still pass.
-  - Sandboxed `xcodebuild test` failed when it could not talk to Apple test runner services; rerun outside the sandbox passed.
-  - Sandboxed `swift build` and `swift test` can fail when Swift cannot write the user module cache; rerun outside the sandbox passed.
+  - Xcode emits CoreSimulator warnings on this machine, but macOS build/test still pass.
+  - Sandboxed SwiftPM can fail when Swift cannot write the user module cache; rerun outside the sandbox passed.
 
 ## 7. Files to Open First
-- `AGENTS.md`: updated repo commands and current workflow expectations.
-- `docs/technical-decisions.md`: early stack decisions and implementation boundaries.
+- `AGENTS.md`: repo commands and workflow expectations.
+- `docs/technical-decisions.md`: package shape, document model, and app-bundle decisions.
 - `README.md`: current build/test/app-bundle workflow.
 - `scripts/generate_xcode_project.py`: source of truth for generated Xcode project shape.
 - `scripts/build_and_run.sh`: local native build and launch verification path.
 - `Resources/Info.plist`: document type and app bundle metadata.
 - `docs/prd-unified-v2.md`: active product requirements.
 - `docs/architecture.md`: target boundaries and provider-registry alignment.
-- `Sources/FlowDesignCore/FlowDesignDocument.swift`: current semantic domain model and JSON boundary.
-- `Tests/FlowDesignCoreTests/FlowDesignDocumentTests.swift`: current semantic model and JSON round-trip coverage.
+- `Sources/FlowDesignCore/FlowDesignDocument.swift`: semantic domain model and JSON boundary.
+- `Sources/FlowDesignCore/FlowDesignDocumentPackageStore.swift`: package save/load boundary.
+- `Tests/FlowDesignCoreTests/FlowDesignDocumentTests.swift`: semantic model and package persistence coverage.
 
 ## 8. Next Actions
 ### Next
-- Commit or intentionally carry the app-bundle path, technical-decision files, and semantic-model slice.
-- Add document package save/reopen support using `document.json` as the semantic source of truth.
-- Add migration/error handling structure around schema version `0.1.0` before the schema evolves.
+- Commit or intentionally carry the current app-bundle, semantic-model, and package-persistence dirty tree.
+- Add app-level document lifecycle using the package store, likely through a native `FileDocument`/`DocumentGroup` boundary if it fits package documents cleanly.
+- Add document-scoped commands for new/open/save once persistence is wired into app state.
 
 ### Blocked
 - None known.
 
 ### Later
+- Add schema migration scaffolding when the first schema change is needed.
+- Add PaperKit sidecar writing after structured flowchart editing starts.
 - Add a final app icon asset before signed release/distribution work.
 - Add CI once repository hosting/CI target is chosen.
 - Add Codex Run-button config if `.codex` becomes writable or the user explicitly approves editing that restricted project path.
 - Add `FlowDesignAI` and `FlowDesignInvokeBridge` after local authoring, persistence, validation, and proposal records are stable.
 
 ## 9. Ready-Made Prompt for Starting a New Thread
-Read `handoff.md` as the hot current-state source for `/Users/paulmarshall/Software Development/flow-design`. Review `AGENTS.md`, `docs/technical-decisions.md`, `README.md`, `scripts/generate_xcode_project.py`, `scripts/build_and_run.sh`, `Resources/Info.plist`, `docs/prd-unified-v2.md`, `Sources/FlowDesignCore/FlowDesignDocument.swift`, and `Tests/FlowDesignCoreTests/FlowDesignDocumentTests.swift` before making changes. Treat `1030588` as the committed baseline and the current dirty tree as the generated Xcode app-bundle/technical-decisions plus Phase 0 semantic-model work. Start with document package save/reopen support unless the user redirects.
+Read `handoff.md` as the hot current-state source for `/Users/paulmarshall/Software Development/flow-design`. Review `AGENTS.md`, `docs/technical-decisions.md`, `README.md`, `scripts/generate_xcode_project.py`, `scripts/build_and_run.sh`, `Resources/Info.plist`, `docs/prd-unified-v2.md`, `Sources/FlowDesignCore/FlowDesignDocument.swift`, `Sources/FlowDesignCore/FlowDesignDocumentPackageStore.swift`, and `Tests/FlowDesignCoreTests/FlowDesignDocumentTests.swift` before making changes. Treat `6a1ea94` as the committed baseline and the current dirty tree as the package-persistence continuation on top of the generated Xcode app-bundle and semantic-model work. Start by wiring package persistence into native app document lifecycle unless the user redirects.
