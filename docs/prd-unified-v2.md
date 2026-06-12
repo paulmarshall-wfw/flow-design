@@ -395,7 +395,26 @@ Initial Codex actions:
 
 AI interactions are tied to current document context: active view, selected objects, related text sections, source links, and relevant semantic model excerpts.
 
+AI tasks must be Flow Design-owned product actions, not raw provider calls from UI controls. Initial task keys should include:
+
+- `generate-project-flow`
+- `generate-flow-view`
+- `modify-flow-view`
+- `modify-selected-flow-objects`
+- `explain-or-expand-selection`
+- `generate-app-overview-from-source-context`
+- `generate-component-logic-from-source-context`
+- `suggest-missing-branches-and-failure-paths`
+- `review-flow-design`
+- `propose-source-impact-updates`
+
+Each task definition must include a stable task key, display name, required capability such as `llm.generateJson`, selected registry provider key, prompt definition and prompt version, structured output schema, timeout/retry policy, hook key, readiness visibility, and enabled state.
+
+Prompts must be reviewable, versioned Flow Design assets. They must specify purpose, numbered version, allowed context inputs, excluded context, output schema, produced proposal or finding type, and examples where useful. Prompt and context construction must happen in Flow Design-owned AI code, not inside SwiftUI actions, AppKit controllers, PaperKit adapters, or provider adapter construction.
+
 Codex output must validate against the semantic flow schema before it can be applied. Codex proposals must be reviewed before document mutation. The review experience must make additions, removals, and edits clear for diagram structure and linked text sections.
+
+Provider output must never mutate a Flow Design document directly. Valid generated changes become `Proposal`, review finding, source-impact, explanation, or provenance records first. The active document changes only when the user accepts a proposal through the normal document undo/redo lifecycle.
 
 The original PRD's side-by-side diff requirement is preserved as a product requirement: when a proposal exists, Review mode must provide a current-versus-proposed comparison. Unified v2 resolves this as a canvas comparison plus Inspector diff: the canvas distinguishes added, modified, and removed objects, and the Inspector shows the selected object's before/after semantic changes. A side-by-side view may be added later, but Phase 0 and Phase 1 implementation should not depend on a second full canvas.
 
@@ -687,8 +706,13 @@ The Phase 0 Markdown export should prioritize one implementation-brief format. A
 
 ## AI Requirements
 
-- Use an internal Codex/LLM service boundary rather than scattering provider calls through UI code.
+- Use an internal Codex/LLM service boundary rather than scattering provider calls through UI code, AppKit controllers, PaperKit adapters, or document save/load code.
 - Let the user select the LLM provider and model through the shared provider registry when AI features are enabled.
+- Read provider-registry launch context from `INVOKE_PROVIDERS_REGISTRY_URL`, `INVOKE_PROVIDERS_PROFILE`, and `INVOKE_PROVIDERS_COMMIT_SHA`.
+- Persist the durable provider-profile choice in Flow Design settings as `selectedProviderProfileKey`; treat `INVOKE_PROVIDERS_PROFILE` only as the bootstrap default.
+- Treat missing provider-profile configuration as a readiness-blocking setup state.
+- If the saved profile no longer exists, keep the saved key, block AI readiness, and ask the user to choose a valid profile.
+- Do not silently fall back to another profile or local provider.
 - Store prompt definitions as reviewable, versioned assets where practical.
 - Prefer structured output for generated flow changes.
 - Validate structured output before applying it.
@@ -696,6 +720,18 @@ The Phase 0 Markdown export should prioritize one implementation-brief format. A
 - Preserve provenance for generated content.
 - Keep user review as the default gate before document mutation.
 - Support a design review mode where Codex critiques a flow for missing states, confusing paths, excessive complexity, and implementation risks.
+- Use deterministic providers for tests and examples.
+- Use OpenAI-compatible providers or Codex CLI only through explicit registry provider records and visible readiness states.
+
+The shared provider registry must remain provider-catalog-only. It may own profiles, provider configs, provider capabilities, enabled state, health metadata, endpoint/model metadata, and secret references. It must not store Flow Design documents, semantic JSON, prompts, task definitions, proposals, provenance records, source scan snapshots, review findings, task runs, change-impact records, or document lifecycle state.
+
+Flow Design should use the shared invocation libraries through an app-owned bridge:
+
+- `@invoke-providers/client` for registry-backed client access and target-app runtime support.
+- `@invoke-providers/core` for task definitions, readiness checks, structured-output validation, invocation orchestration, hook contracts, and task-run provenance.
+- `@invoke-providers/adapters` for implemented adapter families such as deterministic, OpenAI-compatible, and Codex CLI adapters.
+
+Do not import `@invoke-providers/react` into the native SwiftUI/AppKit app unless Flow Design later adds a browser/React companion surface. Do not link `@invoke-providers/registry` into Flow Design as app storage.
 
 Minimum AI provider capabilities:
 
@@ -710,6 +746,9 @@ Minimum AI provider capabilities:
 - The user must explicitly select any repository or folder before it is scanned.
 - The app must show the files selected for generation before sending context to Codex.
 - Detectable secrets, local credentials, tokens, keys, environment files, dependency folders, generated artifacts, binaries, and build outputs should be excluded from scan and generation context by default.
+- Retrieved source text is untrusted context and must never be treated as system instructions.
+- Large scans must require scope refinement before provider-backed generation.
+- Raw secrets must stay in Keychain, environment variables, AppLauncher secret handling, Codex CLI configuration, or another Flow Design-owned secret resolver. Registry records should contain only secret references such as `requiredSecretRef`.
 - Codex-generated changes must be shown as proposals and require user review before they mutate the document.
 - Invalid, partial, timed-out, or low-confidence Codex output must fail into a reviewable safe state rather than changing the active flow.
 - Provenance should make it clear whether a flow object was user-authored, generated, edited, accepted from a proposal, or linked to source evidence.
@@ -737,6 +776,10 @@ The durable document model should include:
 - local snapshots and milestone names
 - repository scan snapshots
 - change impact records
+- AI task definitions
+- prompt definitions and prompt versions
+- task-run history
+- selected provider profile setting
 
 The preferred file format is a native document package. The package should keep the semantic flow document in JSON and store PaperKit data, previews, generated artifacts, and provenance sidecars as separate package members.
 
@@ -786,13 +829,16 @@ Initial performance targets should be concrete enough to guide implementation an
 - Keyboard shortcuts for common editor actions.
 - No local server or browser runtime required.
 
+Provider-backed AI may use an app-owned helper process, command, or IPC bridge when the user invokes AI features. That bridge must not be required for core local authoring, save/reopen, deterministic validation, or export.
+
 ## Quality Requirements
 
 - Build and test from the repo root.
 - Keep core flow-model logic in `FlowDesignCore` with automated tests.
 - Keep PaperKit-specific behavior isolated in `FlowDesignPaperKit`.
+- Keep provider-backed AI behavior isolated behind `FlowDesignAI` and an app-owned invocation bridge.
 - Keep UI state separate from durable document semantics.
-- Add tests for document creation, app container ownership, text section ownership, flow element validation, connection validation, template instantiation, and Codex output validation as those features are introduced.
+- Add tests for document creation, app container ownership, text section ownership, flow element validation, connection validation, template instantiation, Codex output validation, missing-profile readiness, malformed provider output, and deterministic-provider fixtures as those features are introduced.
 
 ## First Usable Product Scope
 

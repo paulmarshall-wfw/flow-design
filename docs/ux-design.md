@@ -186,6 +186,14 @@ All AI output is presented as a proposal that the user reviews before it modifie
 
 AI interactions are tied to the current document context: the active view, the selected elements, and the text sections. The user does not need to re-explain the context — the AI can see the semantic model.
 
+Provider readiness is native and document-centered. The toolbar/menu command, AI setup sheet, Preferences pane, or Inspector action should expose disabled states and concrete readiness reasons when the selected provider profile is missing, unavailable, or not capable of the requested task.
+
+The registry console, if useful for developer setup, remains a separate service UI. It is not embedded in Flow Design's document workflow.
+
+If the saved provider profile is unavailable, the AI surface should keep that saved choice visible, explain that setup is blocked, and ask the user to choose a valid profile. It must not silently switch to a different provider. Local authoring, save/reopen, validation, and export commands remain available while provider-backed AI actions are disabled.
+
+Provider-backed output appears only as Review mode records: proposals, design findings, source-impact findings, or explanations. Accepting generated changes remains an explicit user action and participates in normal document undo/redo.
+
 ## Document Lifecycle Visibility
 
 The document lifecycle state (Draft, Codex Proposed, User Reviewed, Implementation-Ready, etc.) is shown in the toolbar status area as a coloured dot and label. State transitions happen as a result of user actions (reviewing a proposal, completing acceptance criteria, linking to a repository) and are visible without blocking editing.

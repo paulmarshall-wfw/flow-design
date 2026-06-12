@@ -30,9 +30,10 @@ The current local SDK check found `MacOSX26.5.sdk` and Apple Swift 6.3.2.
 
 ## Product Definition
 
-- [Product requirements document](docs/prd.md): draft PRD for goals, user stories, requirements, AI behavior, data model, MVP scope, and open product questions.
+- [Product requirements document](docs/prd-unified-v2.md): active PRD for goals, user stories, requirements, AI/provider behavior, data model, MVP scope, and open product questions.
 - [Product fundamentals](docs/product-fundamentals.md): intent, core concepts, workspace shape, Codex assistance, library, and first usable product scope.
-- [Architecture](docs/architecture.md): target boundaries, PaperKit integration, and verification path.
+- [Architecture](docs/architecture.md): target boundaries, PaperKit integration, provider-registry alignment, and verification path.
+- [Provider registry alignment review](docs/review/flow-design-provider-registry-alignment.md): review input that the active docs now incorporate for provider-backed AI boundaries.
 
 ## Build And Test
 

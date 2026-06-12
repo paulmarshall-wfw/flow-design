@@ -19,10 +19,10 @@ The app's central idea is co-authoring: a user and Codex should be able to creat
 
 Flow Design is a document-based native macOS editor. The dominant surface is a workspace with:
 
-- a project/library sidebar
-- a text panel for structured project notes
-- a central canvas for flowchart drawing
-- an inspector for selected objects, views, and Codex suggestions
+- a full-canvas flowchart workspace
+- selectable app, container, node, connection, label, and view contexts
+- an inspector for selected objects, views, validation, provenance, export, and Codex suggestions
+- a sticky text panel for the selected semantic text section
 - native menus and commands for documents, editing, view control, import, export, and undo
 
 The app should feel like a focused design tool rather than a generic notes app or dashboard. The canvas is the primary work surface, and structured text supports the diagram rather than replacing it.
@@ -147,7 +147,11 @@ Initial Codex actions:
 
 Codex should return structured flow output that validates against the app's flow schema before it can modify the document. The user should be able to review proposed changes before applying them.
 
-Codex proposal review should use a side-by-side diff that makes additions, removals, and edits clear for both diagram structure and linked text sections.
+Codex proposal review should make additions, removals, and edits clear for both diagram structure and linked text sections. The active Unified v2 review pattern is current-versus-proposed canvas comparison plus selected-object details in the Inspector; a separate side-by-side surface can be added later if needed.
+
+Provider-backed Codex assistance should stay behind a Flow Design-owned AI boundary. Native views, AppKit controllers, PaperKit adapters, and document model code should not call provider SDKs directly. Flow Design should own task definitions, prompt versions, context construction, proposal conversion, task-run history, and provenance.
+
+The shared provider registry should be used only for provider catalog data: profiles, provider configs, capabilities, readiness or health metadata, endpoint/model metadata, enabled state, and secret references. Flow Design should persist its selected provider profile in app settings, use launch context only as a bootstrap default, and block AI readiness rather than silently falling back when the saved profile is unavailable.
 
 ## Existing App Analysis
 
@@ -205,7 +209,8 @@ Minimum fundamentals:
 - Local documents come before collaboration or cloud sync.
 - Structured flowchart objects come before freehand drawing.
 - Codex proposes structured changes; the user remains in control of applying them.
-- Provider-specific AI integration should remain behind an internal abstraction.
+- Provider-specific AI integration should remain behind an internal abstraction that uses the shared registry only for provider catalog metadata and secret references.
+- Core local authoring, save/reopen, deterministic validation, and export must keep working when the provider registry or AI providers are unavailable.
 
 ## Open Design Questions
 
