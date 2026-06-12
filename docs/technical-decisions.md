@@ -60,13 +60,14 @@ This file records early implementation decisions that should be settled before p
 
 - `FlowDesignApp` owns window, scene, native commands, toolbar, panel visibility, and document lifecycle.
 - `FlowDesignApp` presents `.flowdesign` documents through `DocumentGroup`; document scene state such as selected canvas is window-scoped, while semantic document data remains inside the bound file document.
-- The first user-facing semantic edit paths are the sidebar document title field and app-level text section editors. They route through core document commands so revision and updated timestamp metadata change with the saved semantic JSON.
+- The first user-facing semantic edit paths are the sidebar document title field, app-level text section editors, and selected-view text section editors. They route through core document commands so revision and updated timestamp metadata change with the saved semantic JSON.
+- Document-scoped command enablement is exposed through SwiftUI focused values. The current command surface uses the focused document scene to enable selected-view text commands only when an editable view is active.
 - `FlowDesignCore` owns document, schema, validation, proposal, provenance, and persistence-safe types with no UI framework dependencies.
 - `FlowDesignPaperKit` owns PaperKit/AppKit/SwiftUI bridge code.
 - The main workspace is a full-canvas SwiftUI surface with floating Inspector and Text panels.
 - Inspector state is selection-driven and mode-aware.
 - Text panel state is sticky and document-owned.
-- Undo/redo should be document-scoped and cover semantic edits, text edits, proposal applications, and view/layout changes.
+- Undo/redo is document-scoped for the current title and text-section semantic edit paths through the SwiftUI document undo manager. Future semantic edits, proposal applications, and view/layout changes should join the same document undo history instead of using separate local stacks.
 - SwiftUI views must call application services or model commands; they must not mutate provider outputs, package files, or PaperKit data directly.
 
 ## CI, Lint, And Static Analysis

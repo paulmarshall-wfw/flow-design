@@ -51,8 +51,8 @@ final class FlowDesignDocumentTests: XCTestCase {
         let originalUpdatedAt = document.updatedAt
         let editDate = Date(timeIntervalSince1970: 1_819_584_000)
 
-        document.updateTitle("Checkout Flow", updatedAt: editDate)
-        document.updateTitle("Checkout Flow", updatedAt: editDate.addingTimeInterval(60))
+        XCTAssertTrue(document.updateTitle("Checkout Flow", updatedAt: editDate))
+        XCTAssertTrue(document.updateTitle("Checkout Flow", updatedAt: editDate.addingTimeInterval(60)))
 
         XCTAssertEqual(document.title, "Checkout Flow")
         XCTAssertEqual(document.revision, 1)
@@ -119,6 +119,36 @@ final class FlowDesignDocumentTests: XCTestCase {
         XCTAssertEqual(
             loaded.appTextSections.map(\.body),
             appSections.map { "Edited \($0.title)" }
+        )
+    }
+
+    func testAllDefaultViewTextSectionsCanBeEditedAndPersisted() throws {
+        var document = FlowDesignDocument.newUntitled()
+        let view = try XCTUnwrap(document.flowViews.first)
+        let viewSections = document.viewTextSections(viewID: view.id)
+        let baseEditDate = Date(timeIntervalSince1970: 1_819_584_000)
+
+        XCTAssertEqual(viewSections.map(\.type), [.viewDescription, .acceptanceCriteria])
+
+        for (offset, section) in viewSections.enumerated() {
+            XCTAssertTrue(document.updateTextSectionBody(
+                sectionID: section.id,
+                body: "Edited \(view.name) \(section.title)",
+                updatedAt: baseEditDate.addingTimeInterval(TimeInterval(offset))
+            ))
+        }
+
+        let packageURL = temporaryPackageURL()
+        try FlowDesignDocumentPackageStore.save(document, to: packageURL)
+
+        let loaded = try FlowDesignDocumentPackageStore.load(from: packageURL)
+        let loadedViewSections = loaded.viewTextSections(viewID: view.id)
+        XCTAssertEqual(document.revision, viewSections.count)
+        XCTAssertEqual(loaded.flowView(id: view.id)?.name, view.name)
+        XCTAssertEqual(loadedViewSections.map(\.id), viewSections.map(\.id))
+        XCTAssertEqual(
+            loadedViewSections.map(\.body),
+            viewSections.map { "Edited \(view.name) \($0.title)" }
         )
     }
 

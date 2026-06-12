@@ -148,14 +148,24 @@ public struct FlowDesignDocument: Codable, Equatable, Identifiable, Sendable {
         textSections(ownerType: .container, ownerID: appContainerID)
     }
 
-    public mutating func updateTitle(_ title: String, updatedAt: Date = Date()) {
+    public func flowView(id: FlowView.ID) -> FlowView? {
+        flowViews.first { $0.id == id }
+    }
+
+    public func viewTextSections(viewID: FlowView.ID) -> [TextSection] {
+        textSections(ownerType: .view, ownerID: viewID)
+    }
+
+    @discardableResult
+    public mutating func updateTitle(_ title: String, updatedAt: Date = Date()) -> Bool {
         guard self.title != title else {
-            return
+            return true
         }
 
         self.title = title
         self.updatedAt = updatedAt
         revision += 1
+        return true
     }
 
     @discardableResult
